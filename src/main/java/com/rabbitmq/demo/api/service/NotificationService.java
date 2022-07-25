@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.rabbitmq.demo.api.message.EmailMessage;
 import com.rabbitmq.demo.api.message.SmsMessage;
+import com.rabbitmq.demo.config.RabbitMQConfig;
 
 @Service
 public class NotificationService {
@@ -13,17 +14,12 @@ public class NotificationService {
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 
-	private static String NOTIFICATION_EXCHANGE = "notification-exchange";
-	private static String SMS_QUEUE = "sms-queue";
-	private static String SMS_ROUTING_KEY = "rk-sms";
-	private static String EMAIL_ROUTING_KEY = "rk-email";
-
 	public void sendSms(SmsMessage smsMessage) {
-		rabbitTemplate.convertAndSend(NOTIFICATION_EXCHANGE, SMS_ROUTING_KEY, smsMessage);
+		rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.SMS_ROUTING_KEY, smsMessage);
 	}
 
 	public void sendEmail(EmailMessage emailMessage) {
-		rabbitTemplate.convertAndSend(NOTIFICATION_EXCHANGE, EMAIL_ROUTING_KEY, emailMessage);
+		rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.EMAIL_ROUTING_KEY, emailMessage);
 	}
 }
 
