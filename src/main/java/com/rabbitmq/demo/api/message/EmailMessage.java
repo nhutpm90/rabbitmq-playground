@@ -1,13 +1,12 @@
 package com.rabbitmq.demo.api.message;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class EmailMessage implements Serializable {
+public class EmailMessage extends BaseMessage {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String email;
 	private List<String> cc;
 	private String template;
@@ -48,6 +47,7 @@ public class EmailMessage implements Serializable {
 
 	@Override
 	public String toString() {
-		return "EmailMessage [email=" + email + ", cc=" + cc + ", template=" + template + ", params=" + params + "]";
+		return "EmailMessage [email=" + email + ", cc=" + cc + ", template=" + template + ", params=" + params
+				+ ", retryCount=" + retryCount + "]";
 	}
 }
