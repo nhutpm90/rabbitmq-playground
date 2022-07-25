@@ -13,8 +13,11 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+	
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
