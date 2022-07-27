@@ -10,6 +10,24 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+	@Override
+	public void configureMessageBroker(MessageBrokerRegistry config) {
+		config
+			.setApplicationDestinationPrefixes("/app")
+			.enableStompBrokerRelay("/topic", "/queue")
+			.setRelayHost("172.16.3.15")
+			.setRelayPort(61613)
+			.setClientLogin("guest")
+			.setClientPasscode("guest");
+		config.setUserDestinationPrefix("/users");
+	}
+
+	@Override
+	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		registry.addEndpoint("/greeting-app").setAllowedOriginPatterns("*").withSockJS();
+		registry.addEndpoint("/greeting-app").setAllowedOriginPatterns("*");
+	}
+	
 //	@Override
 //	public void configureMessageBroker(MessageBrokerRegistry config) {
 //		config.enableSimpleBroker("/topic");
@@ -22,20 +40,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //		registry.addEndpoint("/greeting-app").setAllowedOriginPatterns("*");
 //	}
 	
-	@Override
-	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config
-			.setApplicationDestinationPrefixes("/app")
-			.enableStompBrokerRelay("/topic")
-			.setRelayHost("172.16.3.15")
-			.setRelayPort(61613)
-			.setClientLogin("guest")
-			.setClientPasscode("guest");
-	}
-
-	@Override
-	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/greeting-app").setAllowedOriginPatterns("*").withSockJS();
-		registry.addEndpoint("/greeting-app").setAllowedOriginPatterns("*");
-	}
+//	@Override
+//	public void configureClientInboundChannel(ChannelRegistration registration) {
+//		registration.interceptors(new UserInterceptor());
+//	}
 }

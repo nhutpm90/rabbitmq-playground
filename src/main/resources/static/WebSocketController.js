@@ -7,19 +7,21 @@ class WebSocketController {
 	_onConnected(frame) {
         this.setConnected(true);
         console.log('Connected: ' + frame);
+        this.stompClient.subscribe('/users/queue/messages', this.showMessage);
         this.stompClient.subscribe('/topic/greetings', this.showMessage);
 	}
 	
 	connect() {
 	    //var socket = new SockJS('/websocket-app');
 	    var socket = new SockJS('/greeting-app');
+	    var un = document.getElementById('un').value;
 	    this.stompClient = Stomp.over(socket);  
-	    this.stompClient.connect({}, this._onConnected);
+	    this.stompClient.connect({ username: un }, this._onConnected);
 	}
 
 	sendMessage() {
-	    var message = document.getElementById('text').value;
-	    this.stompClient.send("/app/say-hi", {}, message);		
+	    var un = document.getElementById('un').value;
+	    this.stompClient.send("/app/hello", {}, un);		
 	}
 	
 	showMessage(message) {
@@ -33,7 +35,7 @@ class WebSocketController {
 	setConnected(connected) {
 	    document.getElementById('connect').disabled = connected;
 	    document.getElementById('disconnect').disabled = !connected;
-	    document.getElementById('mural').style.visibility = connected ? 'visible' : 'hidden';
+	    //document.getElementById('mural').style.visibility = connected ? 'visible' : 'hidden';
 	    document.getElementById('response').innerHTML = '';		
 	}
 	

@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -25,17 +26,18 @@ public class GreetingClient {
 
 		String websocketURI = "ws://localhost:8888/greeting-app";
 		StompSessionHandler greetingSessionHandler = new GreetingSessionHandler();
+		WebSocketHttpHeaders handshakeHeaders = new WebSocketHttpHeaders();
+		StompHeaders connectHeaders = new StompHeaders();
+		connectHeaders.add("username", "nhuttest001");
 		ListenableFuture<StompSession> sessionAsync = 
-				stompClient.connect(websocketURI, greetingSessionHandler);
-		
-		int count = 1;
+				stompClient.connect(websocketURI, handshakeHeaders, connectHeaders, greetingSessionHandler);
 		
 		StompSession session = sessionAsync.get();
+		connectHeaders.add("destination", "/users/queue/messages");
 		session.subscribe("/topic/greetings", greetingSessionHandler);
+		
+		session.subscribe(connectHeaders, greetingSessionHandler);
 		while (true) {
-			String sayHiEndpoint = "/app/say-hi";
-			System.out.println("sending message to:: " + sayHiEndpoint);
-			session.send(sayHiEndpoint, new GreetingMessage(count++, "dev"));
 			Thread.sleep(2000);
 		}
 	}
@@ -50,7 +52,7 @@ class GreetingSessionHandler extends StompSessionHandlerAdapter {
 
 	@Override
 	public void handleFrame(StompHeaders headers, Object payload) {
-		GreetingMessage message = (GreetingMessage) payload;
-		System.out.println("messages from /topic/greetings:: " + message);
+        GreetingMessage message = (GreetingMessage) payload;
+        System.out.println("messages from /topic/greetings:: " + message);
 	}
 }
